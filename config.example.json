@@ -1,0 +1,43 @@
+{
+  "model": {
+    "provider": "insightface",
+    "model_name": "buffalo_l",
+    "det_size": [640, 640],
+    "device": "cuda",
+    "gpu_device_id": 0,
+    "allow_cpu_fallback": false,
+    "detection_threshold": 0.5
+  },
+  "image": {
+    "supported_extensions": [".jpg", ".jpeg", ".png", ".webp"],
+    "copy_originals": false,
+    "thumbnail_max_size": 512
+  },
+  "face": {
+    "min_face_width": 40,
+    "min_face_height": 40,
+    "crop_margin_ratio": 0.25,
+    "save_low_quality_faces": true
+  },
+  "cluster": {
+    "algorithm": "dbscan",
+    "metric": "cosine",
+    "eps": 0.42,
+    "min_samples": 2,
+    "noise_as_singleton_group": true,
+    "cluster_include_low_quality_faces": false
+  },
+  "search": {
+    "metric": "cosine",
+    "top_k": 10,
+    "max_best_distance": 0.42,
+    "min_group_vote_count": 3,
+    "min_group_vote_ratio": 0.5
+  },
+  "export": {
+    "copy_matched_images": true,
+    "copy_matched_faces": true,
+    "write_json": true,
+    "write_csv": true
+  }
+}
