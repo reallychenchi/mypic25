@@ -2,6 +2,8 @@
 
 本地照片人脸建库、自动分组和检索命令行程序。数据与 embedding 保存在 SQLite 中。
 
+完整的 Python 版本、CPU/GPU 依赖和安装验证说明见 [REQUIREMENTS.md](REQUIREMENTS.md)。
+
 ## 安装
 
 ```bash
