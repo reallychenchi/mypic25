@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7f4">
+  <title>照片匹配</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main>
+    <section class="workspace" aria-labelledby="instruction">
+      <div class="heading">
+        <span class="mark" aria-hidden="true">人像</span>
+        <p>照片查找</p>
+      </div>
+      <h1 id="instruction">请拍摄一张自己正面清晰照片上传，系统寻找您出场的照片打包下载。</h1>
+
+      <div id="picker" class="picker">
+        <img id="preview" alt="已选择照片预览" hidden>
+        <div id="empty" class="empty">
+          <div class="face-guide" aria-hidden="true"></div>
+          <p>选择一张清晰的正面照片</p>
+        </div>
+      </div>
+
+      <div class="source-actions">
+        <label class="source-button" for="camera">拍照</label>
+        <input id="camera" type="file" accept="image/jpeg,image/png,image/webp" capture="user">
+        <label class="source-button" for="gallery">选择图片</label>
+        <input id="gallery" type="file" accept="image/jpeg,image/png,image/webp">
+      </div>
+
+      <div id="progress-wrap" class="progress-wrap" hidden>
+        <div class="progress-label"><span id="progress-text">正在匹配照片...</span><span>请稍候</span></div>
+        <div class="progress"><span></span></div>
+      </div>
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+      <button id="primary" class="primary" type="button" disabled>匹配</button>
+    </section>
+  </main>
+  <script src="/app.js" defer></script>
+</body>
+</html>

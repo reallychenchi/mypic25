@@ -1,0 +1,30 @@
+:root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #20231f; background: #f6f7f4; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; }
+main { min-height: 100vh; display: grid; place-items: center; padding: 32px 20px; }
+.workspace { width: min(100%, 440px); }
+.heading { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+.heading p { margin: 0; color: #5e665e; font-size: 14px; }
+.mark { display: grid; place-items: center; width: 42px; height: 42px; background: #174c3c; color: white; font-size: 12px; font-weight: 700; }
+h1 { margin: 0 0 24px; font-size: 24px; line-height: 1.45; letter-spacing: 0; }
+.picker { position: relative; width: 100%; aspect-ratio: 4 / 3; overflow: hidden; background: #e8ebe5; border: 1px solid #d4d9d1; }
+.picker img { width: 100%; height: 100%; object-fit: contain; background: #181a18; }
+.empty { height: 100%; display: grid; place-content: center; justify-items: center; gap: 18px; color: #697169; font-size: 14px; }
+.empty p { margin: 0; }
+.face-guide { width: 92px; height: 118px; border: 2px dashed #879088; border-radius: 48% 48% 42% 42%; }
+.source-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0 20px; }
+input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.source-button { height: 44px; display: grid; place-items: center; border: 1px solid #aeb5ad; background: white; cursor: pointer; font-weight: 600; }
+.source-button:hover { border-color: #174c3c; color: #174c3c; }
+.primary { width: 100%; height: 52px; border: 0; background: #174c3c; color: white; font-size: 16px; font-weight: 700; cursor: pointer; }
+.primary:disabled { background: #c4c9c2; cursor: not-allowed; }
+.progress-wrap { margin-bottom: 16px; }
+.progress-label { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 8px; color: #535b53; font-size: 13px; }
+.progress { height: 5px; overflow: hidden; background: #dfe3dc; }
+.progress span { display: block; width: 36%; height: 100%; background: #d19835; animation: loading 1.4s ease-in-out infinite; }
+.status { min-height: 22px; margin-bottom: 10px; color: #4f574f; font-size: 14px; line-height: 1.5; }
+.status.error { color: #a12f2f; }
+.status.success { color: #174c3c; font-weight: 600; }
+@keyframes loading { from { transform: translateX(-110%); } to { transform: translateX(280%); } }
+@media (max-width: 480px) { main { place-items: start center; padding-top: 24px; } h1 { font-size: 21px; } }
+@media (prefers-reduced-motion: reduce) { .progress span { animation-duration: 3s; } }
