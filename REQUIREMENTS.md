@@ -20,7 +20,7 @@ python -m pip install --upgrade pip
 
 | 文件 | 用途 | 直接依赖 |
 | --- | --- | --- |
-| `requirements-common.txt` | 所有运行模式 | InsightFace、NumPy、OpenCV、scikit-learn |
+| `requirements-common.txt` | CLI 与 HTTP API 的公共依赖 | InsightFace、NumPy、OpenCV、scikit-learn、FastAPI、Uvicorn、python-multipart |
 | `requirements-cpu.txt` | CPU 推理 | 公共依赖、`onnxruntime` |
 | `requirements-gpu.txt` | NVIDIA GPU 推理 | 公共依赖、`onnxruntime-gpu` |
 | `requirements.txt` | 默认安装入口 | 引用 GPU 依赖文件 |
@@ -32,6 +32,9 @@ python -m pip install --upgrade pip
 - `opencv-python`：图片读取、缩放、裁剪和写出。
 - `scikit-learn`：DBSCAN 聚类；代码包含 NumPy 降级实现，但正常安装仍建议保留。
 - `onnxruntime` / `onnxruntime-gpu`：执行 InsightFace ONNX 模型。
+- `fastapi`：提供 HTTP API、请求校验和响应处理。
+- `uvicorn`：运行 FastAPI 服务。
+- `python-multipart`：解析人脸查询接口上传的 `multipart/form-data` 图片。
 
 ## 安装
 
@@ -54,6 +57,14 @@ python -m pip install -r requirements.txt
 ```
 
 不要在同一个环境中同时安装 `onnxruntime` 和 `onnxruntime-gpu`。切换后端时，建议重新创建虚拟环境；至少应先卸载另一种运行时。
+
+安装完成后可启动 HTTP API：
+
+```bash
+python -m face_indexer serve --workspace ./workspace --host 0.0.0.0 --port 8000
+```
+
+服务应保持单个 Python 进程运行，以保证下载并发上限是进程内全局限制。接口详情见 `API.md`。
 
 ## 可选验证工具
 
