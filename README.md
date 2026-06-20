@@ -29,7 +29,10 @@ python -m face_indexer search --image ./query.jpg --workspace ./workspace --expo
 python -m face_indexer re-cluster --workspace ./workspace
 python -m face_indexer export-group-largest --workspace ./workspace --export ./group_largest
 python -m face_indexer export-group-largest-face --workspace ./workspace --export ./group_largest_faces
+python -m face_indexer serve --workspace ./workspace --host 0.0.0.0 --port 8000
 ```
+
+HTTP 接口、响应字段和完整错误码见 [API.md](API.md)。
 
 查询阶段只处理查询图片，并读取 SQLite 中已保存的 embedding；不会扫描或重新处理原始照片。修改聚类阈值后执行 `re-cluster`。更换模型需要重新 `build --force true`；新增照片可再次执行 `build`，程序按文件哈希跳过已有照片。
 

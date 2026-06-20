@@ -58,6 +58,11 @@ def parser() -> argparse.ArgumentParser:
     largest_face = commands.add_parser("export-group-largest-face", help="Export the highest-resolution face crop from every group")
     largest_face.add_argument("--workspace", required=True, type=Path)
     largest_face.add_argument("--export", type=Path)
+
+    serve = commands.add_parser("serve", help="Run the HTTP API")
+    serve.add_argument("--workspace", required=True, type=Path)
+    serve.add_argument("--host", default="127.0.0.1")
+    serve.add_argument("--port", default=8000, type=int)
     return root
 
 
@@ -125,6 +130,12 @@ def main(argv: list[str] | None = None) -> int:
             print(f"Copied faces: {result['copied_faces']}")
             print(f"Warnings: {len(result['warnings'])}")
             print(f"Export directory: {result['export']}")
+        elif args.command == "serve":
+            import uvicorn
+            from .api import create_app
+
+            # One worker is intentional: download concurrency is process-global.
+            uvicorn.run(create_app(args.workspace), host=args.host, port=args.port, workers=1)
         return 0
     except Exception as error:
         print(f"Error: {error}", file=sys.stderr)

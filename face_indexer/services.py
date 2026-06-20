@@ -5,6 +5,7 @@ import hashlib
 import json
 import logging
 import shutil
+import uuid
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -256,15 +257,20 @@ def _existing_database(workspace: Path) -> Database:
 
 
 class SearchFaceService:
+    def __init__(self, engine: InsightFaceEngine | None = None):
+        self.engine = engine
+
     def run(self, image_path: Path, workspace: Path, *, export: Path | None = None,
-            top_k: int | None = None, target_face: str = "largest", copy_images: bool | None = None) -> dict:
+            top_k: int | None = None, target_face: str = "largest", copy_images: bool | None = None,
+            require_exactly_one_face: bool = False, write_exports: bool = True) -> dict:
         started = monotonic()
         if not image_path.is_file():
             raise ValueError(f"Query image does not exist: {image_path}")
         database = _existing_database(workspace)
         config = load_config(workspace)
         logger = configure_logging(workspace, "search")
-        query_id = database.next_id("queries", "query_id", "query")
+        # UUIDs keep concurrent API requests isolated without a read-max/write race.
+        query_id = f"query_{uuid.uuid4().hex}"
         query_dir = workspace / "queries" / query_id
         query_dir.mkdir(parents=True)
         query_copy = query_dir / f"query{image_path.suffix.lower()}"
@@ -273,11 +279,15 @@ class SearchFaceService:
         if image is None:
             raise ValueError(f"Could not read query image: {image_path}")
         try:
-            faces = InsightFaceEngine(_runtime_model_config(config, workspace)).detect_and_extract(image)
+            engine = self.engine or InsightFaceEngine(_runtime_model_config(config, workspace))
+            faces = engine.detect_and_extract(image)
         except Exception:
             logger.exception("Model initialization or query analysis failed")
             raise
         logger.info("Query %s: detected %d faces", image_path, len(faces))
+        if require_exactly_one_face and len(faces) != 1:
+            shutil.rmtree(query_dir, ignore_errors=True)
+            raise QueryFaceCountError(len(faces))
         if not faces:
             result = self._no_face_result(query_id, image_path, query_dir)
             if export:
@@ -341,9 +351,10 @@ class SearchFaceService:
             "matched_images": matched_images if matched else [],
         }
         destination = export.resolve() if export else query_dir.resolve()
-        self._export(result, destination, config, copy_images)
+        if write_exports:
+            self._export(result, destination, config, copy_images)
         internal_json = query_dir / "result.json"
-        if destination != query_dir.resolve():
+        if write_exports and destination != query_dir.resolve():
             with internal_json.open("w", encoding="utf-8") as handle:
                 json.dump(result, handle, ensure_ascii=False, indent=2)
                 handle.write("\n")
@@ -435,6 +446,12 @@ class SearchFaceService:
                  result["best_face_id"], result["best_distance"], result["confidence"], status, message,
                  str(result_path.resolve()), now()),
             )
+
+
+class QueryFaceCountError(ValueError):
+    def __init__(self, detected_count: int):
+        self.detected_count = detected_count
+        super().__init__(f"Expected exactly one face, detected {detected_count}")
 
 
 class ReportService:

@@ -48,6 +48,11 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "write_json": True,
         "write_csv": True,
     },
+    "api": {
+        "download_max_concurrency": 3,
+        "zip_retention_hours": 48,
+        "max_upload_bytes": 20 * 1024 * 1024,
+    },
 }
 
 

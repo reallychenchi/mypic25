@@ -39,5 +39,10 @@
     "copy_matched_faces": true,
     "write_json": true,
     "write_csv": true
+  },
+  "api": {
+    "download_max_concurrency": 3,
+    "zip_retention_hours": 48,
+    "max_upload_bytes": 20971520
   }
 }
